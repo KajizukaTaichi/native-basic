@@ -23,7 +23,7 @@ impl Compiler {
             .collect::<Vec<String>>()
             .concat();
         Some(format!(
-            "[ORG 0x7C00]\n[BITS 16]\n{code}\n{lib}\n{var}\ntimes 510 - ($ - $$) db 0\ndw 0xAA55\n",
+            "[ORG 0x7C00]\n[BITS 16]\n{code}\tjmp $\n{lib}\n{var}\ntimes 510 - ($ - $$) db 0\ndw 0xAA55\n",
             lib = include_str!("./lib.asm"),
             var = self.variable.concat()
         ))
@@ -74,7 +74,7 @@ impl Value {
         match self {
             Value::String(text) => {
                 let name = format!("str_literal_{}", ctx.index);
-                ctx.variable.push(format!("\t{name} db \"{text}\", 0\n"));
+                ctx.variable.push(format!("{name} db \"{text}\", 0\n"));
                 ctx.index += 1;
                 name
             }
