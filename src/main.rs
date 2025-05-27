@@ -41,6 +41,9 @@ impl Stmt {
         let source = source.trim();
         if let Some(token) = source.strip_prefix("say") {
             Some(Stmt::Say(Value::parse(token)?))
+        } else if let Some(token) = source.strip_prefix("let") {
+            let (name, val) = token.split_once("=")?;
+            Some(Stmt::Let(name.trim().to_owned(), Value::parse(val.trim())?))
         } else {
             None
         }
@@ -62,6 +65,7 @@ impl Stmt {
 #[derive(Debug, Clone)]
 enum Value {
     String(String),
+    Variable(String),
 }
 impl Value {
     fn parse(source: &str) -> Option<Value> {
@@ -73,7 +77,7 @@ impl Value {
         {
             Some(Value::String(token.to_string()))
         } else {
-            None
+            Some(Value::Variable(source.to_owned()))
         }
     }
 
@@ -85,6 +89,7 @@ impl Value {
                 ctx.index += 1;
                 name
             }
+            Value::Variable(name) => name.to_string(),
         }
     }
 }
