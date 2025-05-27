@@ -2,7 +2,7 @@
 [BITS 16]
 	mov si, str_literal_0
 	call print
-
+	jmp $
 print:
     lodsb
     or al, al
@@ -15,7 +15,7 @@ print_done:
     int 0x10
     ret
 
-	str_literal_0 db "Hello", 0
+str_literal_0 db "Hello", 0
 
 times 510 - ($ - $$) db 0
 dw 0xAA55
