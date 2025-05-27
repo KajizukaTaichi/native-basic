@@ -33,6 +33,7 @@ impl Compiler {
 #[derive(Debug, Clone)]
 enum Stmt {
     Say(Value),
+    Let(String, Value),
 }
 
 impl Stmt {
@@ -48,6 +49,12 @@ impl Stmt {
     fn compile(&self, ctx: &mut Compiler) -> String {
         match self {
             Stmt::Say(text) => format!("\tmov si, {}\n\tcall print\n", text.compile(ctx)),
+            Stmt::Let(name, val) => {
+                let val = val.compile(ctx);
+                ctx.variable.push(format!("{name} db {val}\n"));
+                ctx.index += 1;
+                String::new()
+            }
         }
     }
 }
