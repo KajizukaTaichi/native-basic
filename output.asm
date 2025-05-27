@@ -3,6 +3,7 @@
 	mov si, str_literal_0
 	call print
 	jmp $
+
 print:
     lodsb
     or al, al
