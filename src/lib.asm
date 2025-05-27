@@ -1,3 +1,4 @@
+
 print:
     lodsb
     or al, al
