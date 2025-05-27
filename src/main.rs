@@ -55,7 +55,6 @@ impl Stmt {
             Stmt::Let(name, val) => {
                 let val = val.compile(ctx);
                 ctx.variable.push(format!("{name} db {val}\n"));
-                ctx.index += 1;
                 String::new()
             }
         }
@@ -64,6 +63,7 @@ impl Stmt {
 
 #[derive(Debug, Clone)]
 enum Value {
+    Integer(i32),
     String(String),
     Variable(String),
 }
@@ -76,6 +76,8 @@ impl Value {
             .flatten()
         {
             Some(Value::String(token.to_string()))
+        } else if let Ok(token) = source.parse::<i32>() {
+            Some(Value::Integer(token))
         } else {
             Some(Value::Variable(source.to_owned()))
         }
@@ -89,7 +91,8 @@ impl Value {
                 ctx.index += 1;
                 name
             }
-            Value::Variable(name) => name.to_string(),
+            Value::Integer(int) => int.to_string(),
+            Value::Variable(name) => format!("[{name}]"),
         }
     }
 }
